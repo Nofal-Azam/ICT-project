@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Investments Portfolio</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* BASE STYLES - Matching your homepage */
+      :root {
+        --primary-dark: #1b263b; /* Main Header Background */
+        --secondary-dark: #2c3e50; /* Taskbar Background */
+        --accent-yellow: #fdd835; /* Primary Accent */
+        --text-white: #e8e8e8;
+        --success-green: #2ecc71;
+        --danger-red: #e74c3c;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f4f7f6; /* Light gray background for main content area */
+        color: var(--primary-dark);
+        min-height: 100vh;
+      }
+
+      /* Taskbar (Top Dark Bar) */
+      .top-taskbar {
+        background-color: var(--secondary-dark);
+        color: var(--text-white);
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+      .top-taskbar .taskbar-brand,
+      .top-taskbar .taskbar-link {
+        color: var(--text-white);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      .top-taskbar .taskbar-brand:hover,
+      .top-taskbar .taskbar-link:hover {
+        color: var(--accent-yellow);
+      }
+
+      /* Main Header (Colorful Bar) */
+      .main-header {
+        background-color: #3f51b5;
+        color: var(--text-white);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .main-header .nav-link {
+        color: var(--text-white);
+        transition: color 0.3s ease;
+      }
+      .main-header .nav-link:hover {
+        color: var(--accent-yellow);
+      }
+      .start-investing-btn {
+        background-color: var(--accent-yellow) !important;
+        border-color: var(--accent-yellow) !important;
+        color: var(--primary-dark) !important;
+        font-weight: 600;
+      }
+
+      /* PORTFOLIO STYLES */
+
+      .dashboard-container {
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+      }
+
+      .summary-card {
+        background: linear-gradient(135deg, var(--primary-dark), #34495e);
+        color: var(--text-white);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .section-heading {
+        color: var(--primary-dark);
+        font-weight: 700;
+        border-bottom: 3px solid var(--accent-yellow);
+        display: inline-block;
+        padding-bottom: 5px;
+        margin-bottom: 2rem;
+      }
+
+      /* TABLE STYLES */
+      .portfolio-table-wrapper {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        overflow-x: auto; /* Ensure responsiveness on small screens */
+      }
+
+      .portfolio-table thead {
+        background-color: var(--primary-dark);
+        color: var(--text-white);
+      }
+
+      .portfolio-table th {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+        vertical-align: middle;
+      }
+
+      .portfolio-table td {
+        padding: 1rem 1.25rem;
+        vertical-align: middle;
+        font-size: 0.95rem;
+      }
+
+      .portfolio-table tbody tr:hover {
+        background-color: #ecf0f1;
+        cursor: pointer;
+      }
+
+      .positive-pl {
+        color: var(--success-green);
+        font-weight: 600;
+      }
+
+      .negative-pl {
+        color: var(--danger-red);
+        font-weight: 600;
+      }
+
+      .zero-pl {
+        color: #7f8c8d;
+      }
+
+      .action-icon {
+        color: var(--primary-dark);
+        cursor: pointer;
+        margin-left: 0.75rem;
+        transition: color 0.2s ease;
+      }
+      .action-icon:hover {
+        color: var(--accent-yellow);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- MAIN HEADER - Navigation updated (Home Page and Analysis kept) -->
+    <header class="main-header py-3">
+      <div class="container d-flex justify-content-between align-items-center">
+        <div class="logo">
+          <a
+            href="index.html"
+            class="text-decoration-none text-white fs-4 fw-bold"
+            >StocksMaster Portfolio</a
+          >
+        </div>
+        <nav class="main-nav">
+          <ul class="nav">
+            <!-- Home Page link -->
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/">Home Page</a>
+            </li>
+
+            <!-- Analysis link is kept -->
+            <li class="nav-item">
+              <a class="nav-link text-white" href="#analysis">Analysis</a>
+            </li>
+
+            <!-- Authentication Status Placeholder (Will always show Welcome) -->
+            <li class="nav-item ms-lg-4" id="auth-status">
+              <!-- Content managed by JS on load -->
+              <a class="btn btn-primary start-investing-btn" href="login.html"
+                >Start Investing Now</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <div class="container dashboard-container">
+      <h1 class="section-heading">My Current Investments</h1>
+
+      <!-- Portfolio Summary Card -->
+      <div class="row mb-5">
+        <div class="col-md-6 col-lg-4">
+          <div class="p-4 summary-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 fw-light">Total Portfolio Value</h5>
+              <i class="fas fa-chart-line text-info fs-4"></i>
+            </div>
+            <!-- Placeholder Values -->
+            <h2 class="fw-bold mb-0" id="totalValue">$0.00</h2>
+            <p class="mt-2 text-sm opacity-75">
+              Based on simulated current market prices.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portfolio Table and Controls -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold fs-5 mb-0">Held Shares (Placeholder)</h3>
+        <!-- Add Stock Button is kept -->
+        <button id="addStockButton" class="btn btn-sm btn-success">
+          <i class="fas fa-plus me-2"></i>Add New Share
+        </button>
+      </div>
+
+      <div class="portfolio-table-wrapper">
+        <table class="table portfolio-table">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Company Name</th>
+              <th>Quantity</th>
+              <th>Purchase Price</th>
+              <th>Current Price (Sim.)</th>
+              <th>Total Cost</th>
+              <th>Current Value</th>
+              <th>Total P/L ($)</th>
+              <th>P/L (%)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for stock in investments %}
+            <tr>
+              <td>{{ stock.Symbol }}</td>
+              <td>{{ stock.Company }}</td>
+              <td>{{ stock.Quantity }}</td>
+              <td>{{ stock['Purchase Price'] }}</td>
+              <td>{{ stock['Current Price'] }}</td>
+              <td>{{ stock.Quantity * stock['Purchase Price'] }}</td>
+              <td>{{ stock.Quantity * stock['Current Price'] }}</td>
+              <td>
+                {{ (stock['Current Price'] - stock['Purchase Price']) *
+                stock.Quantity }}
+              </td>
+              <td>
+                {{ ( ((stock['Current Price'] - stock['Purchase Price']) /
+                stock['Purchase Price']) * 100 ) | round(2) }}%
+              </td>
+              <td>
+                <i class="fas fa-edit action-icon"></i>
+                <i class="fas fa-trash action-icon"></i>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-end fw-bold">Grand Totals:</td>
+              <td class="fw-bold" id="totalCostFooter">$0.00</td>
+              <td class="fw-bold" id="totalValueFooter">$0.00</td>
+              <td
+                class="fw-bold"
+                id="totalPLFooter"
+                colspan="2"
+                class="text-center"
+              >
+                --
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Message Box for Empty Portfolio -->
+      <div id="emptyPortfolioMessage" class="alert alert-info text-center mt-4">
+        This table is currently a static placeholder and does not contain any
+        investment data.
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // --- DATA STRUCTURE ---
+      // Portfolio is initialized as an empty array as requested (no dummy data)
+      let portfolio = [];
+
+      // --- CORE FUNCTIONS ---
+      // Functions for adding, editing, and deleting are removed.
+
+      function renderPortfolio() {
+        const tableBody = document.getElementById("portfolioTableBody");
+        tableBody.innerHTML = "";
+
+        // Placeholder/zero values for totals
+        const grandTotalCost = 0;
+        const grandTotalValue = 0;
+
+        // Always show the placeholder message since the portfolio array is empty
+        document.getElementById("emptyPortfolioMessage").style.display =
+          "block";
+        document.getElementById("totalValue").textContent = "$0.00";
+        document.getElementById("totalCostFooter").textContent = "$0.00";
+        document.getElementById("totalValueFooter").textContent = "$0.00";
+        document.getElementById("totalPLFooter").textContent = "--";
+
+        // The table is designed to be extensible, but currently displays no rows.
+      }
+
+      // --- AUTH STATUS HANDLER (Modified to always show 'Welcome, Stockmanagement156') ---
+
+      function handleLogout() {
+        // Keep localStorage removal for clean state, but redirect to login page
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+      }
+
+      function handleAuthStatus() {
+        // NOTE: Hardcoded username 'stockmanagement156' is used as requested.
+        const username = "stockmanagement156";
+        const authStatusLi = document.getElementById("auth-status");
+
+        authStatusLi.innerHTML = ""; // Clear existing content
+
+        // 1. Welcome Message
+        const welcomeSpan = document.createElement("span");
+        // Capitalize the first letter of the hardcoded username for display
+        const displayUsername =
+          username.charAt(0).toUpperCase() + username.slice(1);
+        welcomeSpan.textContent = `Welcome, ${displayUsername}`;
+        welcomeSpan.className =
+          "text-white me-3 d-flex align-items-center fw-semibold";
+
+        // 2. Logout Button
+        const logoutBtn = document.createElement("button");
+        logoutBtn.id = "logout-btn";
+        logoutBtn.className = "btn btn-sm btn-outline-light";
+        logoutBtn.textContent = "Logout";
+        logoutBtn.addEventListener("click", handleLogout);
+
+        authStatusLi.className = "nav-item ms-lg-4 d-flex align-items-center";
+        authStatusLi.appendChild(welcomeSpan);
+        authStatusLi.appendChild(logoutBtn);
+      }
+
+      // --- INITIALIZATION ---
+      document.addEventListener("DOMContentLoaded", () => {
+        handleAuthStatus();
+        renderPortfolio();
+      });
+
+      // Placeholder listener for the restored button (remains static)
+      document
+        .getElementById("addStockButton")
+        .addEventListener("click", () => {
+          // Placeholder action: This button is ready to be linked to a new stock entry page.
+          console.log(
+            "Add New Share button clicked. Placeholder for future navigation."
+          );
+        });
+
+      async function fetchPortfolioData() {
+        try {
+          // Fetch holdings from Flask
+          const holdingsResponse = await fetch("/holdings");
+          const holdings = await holdingsResponse.json();
+
+          // Fetch summary info (total value etc.)
+          const summaryResponse = await fetch("/summary");
+          const summary = await summaryResponse.json();
+
+          // Update total portfolio value at the top
+          document.getElementById("totalValue").textContent =
+            "PKR " + summary.portfolio_value.toLocaleString();
+
+          // Fill the holdings table
+          const tbody = document.getElementById("portfolioTableBody");
+          tbody.innerHTML = "";
+
+          holdings.forEach((stock) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td>${stock["Company Symbol"]}</td>
+        <td>${stock["Company Name"]}</td>
+        <td>${stock["Net Shares"]}</td>
+        <td>PKR ${stock["Average Buy Price(PKR)"]?.toLocaleString()}</td>
+        <td>PKR ${stock["Current Market Price (PKR)"]?.toLocaleString()}</td>
+        <td>PKR ${stock["Total Bought (PKR)"]?.toLocaleString()}</td>
+        <td>PKR ${stock["Market Value (PKR)"]?.toLocaleString()}</td>
+        <td class="${
+          stock["Profit/Loss (PKR)"] >= 0 ? "positive-pl" : "negative-pl"
+        }">
+          PKR ${stock["Profit/Loss (PKR)"]?.toLocaleString()}
+        </td>
+        <td>${stock["Status"] || "-"}</td>
+        <td><i class="fas fa-eye action-icon"></i></td>
+      `;
+            tbody.appendChild(row);
+          });
+
+          // Hide placeholder message when data loads
+          document.getElementById("emptyPortfolioMessage").style.display =
+            "none";
+        } catch (err) {
+          console.error("Error fetching portfolio data:", err);
+        }
+      }
+
+      // Load when the page is ready
+      document.addEventListener("DOMContentLoaded", () => {
+        handleAuthStatus();
+        fetchPortfolioData();
+      });
+    </script>
+  </body>
+</html>
