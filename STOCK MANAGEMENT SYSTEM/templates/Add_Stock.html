@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Transaction - StocksMaster</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- Pre-connect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* BASE STYLES - Matching your existing pages */
+      :root {
+        --primary-dark: #1b263b;
+        --secondary-dark: #2c3e50;
+        --accent-yellow: #fdd835;
+        --text-white: #e8e8e8;
+        --success-green: #2ecc71;
+        --danger-red: #e74c3c;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f4f7f6;
+        color: var(--primary-dark);
+        min-height: 100vh;
+      }
+
+      /* Main Header */
+      .main-header {
+        background-color: #3f51b5;
+        color: var(--text-white);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-family: "Inter", sans-serif;
+      }
+      .main-header .nav-link {
+        color: var(--text-white);
+        transition: color 0.3s ease;
+      }
+      .main-header .nav-link:hover {
+        color: var(--accent-yellow);
+      }
+      .start-investing-btn {
+        background-color: var(--accent-yellow) !important;
+        border-color: var(--accent-yellow) !important;
+        color: var(--primary-dark) !important;
+        font-weight: 600;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+      }
+      .start-investing-btn:hover {
+        opacity: 0.9;
+      }
+
+      /* btn-outline-light */
+      .btn-outline-light {
+        color: #f8f9fa;
+        border-color: #f8f9fa;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+      .btn-outline-light:hover {
+        color: #212529;
+        background-color: #f8f9fa;
+      }
+
+      /* Section Heading */
+      .section-heading {
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 1.75rem;
+        border-bottom: 3px solid var(--accent-yellow);
+        display: inline-block;
+        padding-bottom: 5px;
+        margin-bottom: 2rem;
+      }
+
+      /* Form Styling */
+      .form-label {
+        font-weight: 500;
+        color: var(--secondary-dark);
+      }
+      .form-input,
+      .form-select {
+        border: 1px solid #d1d5db; /* gray-300 */
+        border-radius: 0.375rem; /* rounded-md */
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .form-input:focus,
+      .form-select:focus {
+        outline: none;
+        border-color: #4f46e5; /* indigo-500 */
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+      }
+      .form-input[disabled] {
+        background-color: #f3f4f6; /* gray-100 */
+        cursor: not-allowed;
+      }
+
+      /* Submit Button */
+      .submit-btn {
+        background-color: var(--primary-dark);
+        color: var(--text-white);
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        transition: background-color 0.2s ease;
+      }
+      .submit-btn:hover {
+        background-color: var(--secondary-dark);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <!-- Navbar: Adapted from your reference file -->
+    <header class="main-header py-3">
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center"
+      >
+        <div class="logo">
+          <a
+            href="/"
+            class="text-decoration-none text-white text-2xl font-bold"
+            style="text-decoration: none"
+            >StocksMaster Portfolio</a
+          >
+        </div>
+        <nav class="main-nav">
+          <ul class="flex space-x-6">
+            <li>
+              <a class="nav-link" href="/">Home Page</a>
+            </li>
+            <li>
+              <a class="nav-link" href="/index2_seeinvestment"
+                >See Investments</a
+              >
+            </li>
+            <li>
+              <a class="nav-link" href="/analysis">Analysis</a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Auth Status: This will be populated by JavaScript -->
+        <div id="auth-status" class="ml-4 flex items-center">
+          <!-- JS will place "Start Investing" or "Logout" here -->
+        </div>
+
+        <!-- Mobile menu button (basic) -->
+        <div class="-mr-2 flex md:hidden">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none"
+          >
+            <span class="sr-only">Open main menu</span>
+            <i class="fas fa-bars text-white text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+      <!-- Logged Out Message: Hidden by default -->
+      <div id="logged-out-message" class="hidden">
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h1 class="section-heading">Authentication Required</h1>
+          <div
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mt-6"
+            role="alert"
+          >
+            <strong class="font-bold">Access Denied:</strong>
+            <span class="block sm:inline">
+              Please log in to add a transaction.</span
+            >
+          </div>
+          <a href="/login" class="start-investing-btn mt-6 inline-block">
+            Go to Login
+          </a>
+        </div>
+      </div>
+
+      <!-- Add Stock Form: Hidden by default, shown if logged in -->
+      <div id="add-stock-content" class="hidden">
+        <h1 class="section-heading">Add New Transaction</h1>
+
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md max-w-3xl mx-auto">
+          <!-- Status Message Area -->
+          <div id="status-message" class="hidden mb-6 p-4 rounded-md"></div>
+
+          <form id="add-stock-form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Transaction Type -->
+              <div>
+                <label
+                  for="transactionType"
+                  class="block text-sm form-label mb-1"
+                  >Transaction Type</label
+                >
+                <select
+                  id="transactionType"
+                  name="transactionType"
+                  class="form-select"
+                  required
+                >
+                  <option value="Buy">Buy</option>
+                  <option value="Sell">Sell</option>
+                </select>
+              </div>
+
+              <!-- Date -->
+              <div>
+                <label for="date" class="block text-sm form-label mb-1"
+                  >Date</label
+                >
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  class="form-input"
+                  required
+                />
+              </div>
+
+              <!-- Company Symbol -->
+              <div>
+                <label for="symbol" class="block text-sm form-label mb-1"
+                  >Company Symbol</label
+                >
+                <input
+                  type="text"
+                  id="symbol"
+                  name="symbol"
+                  class="form-input"
+                  placeholder="e.g., ENGRO"
+                  required
+                />
+              </div>
+
+              <!-- Company Name -->
+              <div>
+                <label for="companyName" class="block text-sm form-label mb-1"
+                  >Company Name</label
+                >
+                <input
+                  type="text"
+                  id="companyName"
+                  name="companyName"
+                  class="form-input"
+                  placeholder="e.g., Engro Corporation Ltd"
+                  required
+                />
+              </div>
+
+              <!-- Quantity -->
+              <div>
+                <label for="quantity" class="block text-sm form-label mb-1"
+                  >Quantity</label
+                >
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  class="form-input"
+                  placeholder="0"
+                  min="0"
+                  step="any"
+                  required
+                />
+              </div>
+
+              <!-- Price Per Share -->
+              <div>
+                <label for="price" class="block text-sm form-label mb-1"
+                  >Price Per Share (pkr)</label
+                >
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  class="form-input"
+                  placeholder="0.00"
+                  min="0"
+                  step="any"
+                  required
+                />
+              </div>
+
+              <!-- Total Amount (Auto-Calculated) -->
+              <div class="md:col-span-2">
+                <label for="totalAmount" class="block text-sm form-label mb-1"
+                  >Total Amount (pkr)</label
+                >
+                <input
+                  type="number"
+                  id="totalAmount"
+                  name="totalAmount"
+                  class="form-input"
+                  placeholder="0.00"
+                  disabled
+                />
+                <p class="text-xs text-gray-500 mt-1">
+                  Auto-calculated (Quantity * Price). You can override if
+                  needed.
+                </p>
+              </div>
+
+              <!-- Remarks -->
+              <div class="md:col-span-2">
+                <label for="remarks" class="block text-sm form-label mb-1"
+                  >Remarks</label
+                >
+                <input
+                  type="text"
+                  id="remarks"
+                  name="remarks"
+                  class="form-input"
+                  placeholder="e.g., Long-term hold"
+                />
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-8 text-right">
+              <button type="submit" id="submit-button" class="submit-btn">
+                Add Transaction
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+      // --- AUTHENTICATION LOGIC (From your reference) ---
+
+      function handleLogout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.reload();
+      }
+
+      function handleAuthStatus() {
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const authStatusDiv = document.getElementById("auth-status");
+        authStatusDiv.innerHTML = "";
+
+        if (loggedInUser) {
+          const welcomeSpan = document.createElement("span");
+          welcomeSpan.className = "text-white mr-3";
+          welcomeSpan.textContent = `Welcome, ${loggedInUser}`;
+          const logoutBtn = document.createElement("button");
+          logoutBtn.id = "logout-btn";
+          logoutBtn.className =
+            "btn bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold";
+          logoutBtn.textContent = "Logout";
+          logoutBtn.addEventListener("click", handleLogout);
+
+          authStatusDiv.appendChild(welcomeSpan);
+          authStatusDiv.appendChild(logoutBtn);
+          return true;
+        } else {
+          const loginBtn = document.createElement("a");
+          loginBtn.className = "start-investing-btn";
+          loginBtn.href = "/login";
+          loginBtn.textContent = "Start Investing Now";
+          authStatusDiv.appendChild(loginBtn);
+          return false;
+        }
+      }
+
+      function showLoggedOutContent() {
+        document.getElementById("add-stock-content").style.display = "none";
+        document.getElementById("logged-out-message").style.display = "block";
+      }
+
+      // --- ADD STOCK PAGE LOGIC ---
+
+      function setupFormLogic() {
+        const quantityInput = document.getElementById("quantity");
+        const priceInput = document.getElementById("price");
+        const totalAmountInput = document.getElementById("totalAmount");
+        const form = document.getElementById("add-stock-form");
+        const statusMessage = document.getElementById("status-message");
+        const submitButton = document.getElementById("submit-button");
+
+        // 1. Auto-calculate Total Amount
+        function calculateTotal() {
+          const quantity = parseFloat(quantityInput.value) || 0;
+          const price = parseFloat(priceInput.value) || 0;
+          const total = quantity * price;
+          totalAmountInput.value = total.toFixed(2);
+        }
+
+        quantityInput.addEventListener("input", calculateTotal);
+        priceInput.addEventListener("input", calculateTotal);
+
+        // 2. Enable/Disable the Total Amount field (for override)
+        totalAmountInput.addEventListener("click", () => {
+          totalAmountInput.disabled = false;
+        });
+
+        // 3. Handle Form Submission
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault(); // Prevent default HTML form submission
+
+          submitButton.disabled = true;
+          submitButton.textContent = "Submitting...";
+
+          // --- FIX: Collect data *before* the object ---
+          const quantity = parseFloat(
+            document.getElementById("quantity").value
+          );
+          const price = parseFloat(document.getElementById("price").value);
+          let totalAmount = parseFloat(totalAmountInput.value);
+
+          // FIX: If totalAmount is null/NaN (e.g., empty), recalculate it.
+          if (isNaN(totalAmount) || totalAmount === 0) {
+            totalAmount = price * quantity;
+          }
+          // --- END OF FIX ---
+
+          // Collect form data
+          const formData = {
+            date: document.getElementById("date").value,
+            symbol: document.getElementById("symbol").value,
+            companyName: document.getElementById("companyName").value,
+            transactionType: document.getElementById("transactionType").value,
+            quantity: quantity,
+            price: price,
+            totalAmount: totalAmount,
+            remarks: document.getElementById("remarks").value,
+          };
+
+          // Send data to Flask backend
+          try {
+            const response = await fetch("/api/add_transaction", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || "Server error");
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Show success message
+              statusMessage.className =
+                "bg-green-100 border border-green-400 text-green-700 p-4 rounded-md";
+              statusMessage.textContent =
+                "Success! Transaction added. It will appear in your analysis shortly.";
+              statusMessage.style.display = "block";
+              // Clear the form
+              form.reset();
+
+              // --- FIX: Re-disable and clear totalAmountInput ---
+              totalAmountInput.value = "";
+              totalAmountInput.disabled = true;
+              // --- END OF FIX ---
+            } else {
+              throw new Error(result.error || "Failed to add transaction.");
+            }
+          } catch (error) {
+            // Show error message
+            statusMessage.className =
+              "bg-red-100 border border-red-400 text-red-700 p-4 rounded-md";
+            statusMessage.textContent = `Error: ${error.message}`;
+            statusMessage.style.display = "block";
+          } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Add Transaction";
+            // Scroll to top to show message
+            window.scrollTo(0, 0);
+          }
+        });
+      }
+
+      // --- PAGE INITIALIZATION ---
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. Update the nav bar based on login status
+        const isLoggedIn = handleAuthStatus();
+
+        // 2. Show content ONLY if the user is logged in
+        if (isLoggedIn) {
+          document.getElementById("add-stock-content").style.display = "block";
+          setupFormLogic();
+        } else {
+          showLoggedOutContent();
+        }
+      });
+    </script>
+  </body>
+</html>

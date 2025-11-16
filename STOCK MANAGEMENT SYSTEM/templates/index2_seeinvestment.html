@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Investments Portfolio</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- We keep Tailwind for utility classes if needed, but Bootstrap is primary -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* BASE STYLES - Matching your homepage */
+      :root {
+        --primary-dark: #1b263b; /* Main Header Background */
+        --secondary-dark: #2c3e50; /* Taskbar Background */
+        --accent-yellow: #fdd835; /* Primary Accent */
+        --text-white: #e8e8e8;
+        --success-green: #2ecc71;
+        --danger-red: #e74c3c;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f4f7f6; /* Light gray background for main content area */
+        color: var(--primary-dark);
+        min-height: 100vh;
+      }
+
+      /* Main Header (Colorful Bar) */
+      .main-header {
+        background-color: #3f51b5;
+        color: var(--text-white);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .main-header .nav-link {
+        color: var(--text-white);
+        transition: color 0.3s ease;
+      }
+      .main-header .nav-link:hover {
+        color: var(--accent-yellow);
+      }
+      .start-investing-btn {
+        background-color: var(--accent-yellow) !important;
+        border-color: var(--accent-yellow) !important;
+        color: var(--primary-dark) !important;
+        font-weight: 600;
+      }
+
+      /* PORTFOLIO STYLES */
+
+      .dashboard-container {
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+      }
+
+      .summary-card {
+        background: linear-gradient(135deg, var(--primary-dark), #34495e);
+        color: var(--text-white);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .section-heading {
+        color: var(--primary-dark);
+        font-weight: 700;
+        border-bottom: 3px solid var(--accent-yellow);
+        display: inline-block;
+        padding-bottom: 5px;
+        margin-bottom: 2rem;
+      }
+
+      /* TABLE STYLES */
+      .portfolio-table-wrapper {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        overflow-x: auto; /* Ensure responsiveness on small screens */
+      }
+
+      .portfolio-table thead,
+      .portfolio-table tfoot {
+        background-color: var(--primary-dark);
+        color: var(--text-white);
+      }
+
+      .portfolio-table th,
+      .portfolio-table tfoot td {
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+        vertical-align: middle;
+      }
+
+      .portfolio-table tfoot td {
+        /* Ensure alignment in the footer */
+        border-top: 2px solid var(--accent-yellow);
+      }
+
+      .portfolio-table td {
+        padding: 1rem 1.25rem;
+        vertical-align: middle;
+        font-size: 0.95rem;
+      }
+
+      .portfolio-table tbody tr:hover {
+        background-color: #ecf0f1;
+        cursor: pointer;
+      }
+
+      .positive-pl {
+        color: var(--success-green) !important;
+        font-weight: 600;
+      }
+
+      .negative-pl {
+        color: var(--danger-red) !important;
+        font-weight: 600;
+      }
+
+      .zero-pl {
+        color: #7f8c8d;
+      }
+
+      .action-icon {
+        color: var(--primary-dark);
+        cursor: pointer;
+        margin-left: 0.75rem;
+        transition: color 0.2s ease;
+      }
+      .action-icon:hover {
+        color: var(--accent-yellow);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="main-header py-3">
+      <div class="container d-flex justify-content-between align-items-center">
+        <!-- 1. LOGO (Left) -->
+        <div class="logo">
+          <a href="/" class="text-decoration-none text-white fs-4 fw-bold"
+            >StocksMaster Portfolio</a
+          >
+        </div>
+
+        <nav class="main-nav">
+          <ul class="flex space-x-6">
+            <li>
+              <a class="nav-link" href="/">Home Page</a>
+            </li>
+            <li>
+              <a class="nav-link" href="/analysis">Analysis</a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 3. AUTH BUTTON (Right) -->
+        <div>
+          <ul class="nav">
+            <li class="nav-item ms-lg-4" id="auth-status">
+              <!-- The JavaScript for handleAuthStatus() will populate this -->
+              <a class="btn btn-primary start-investing-btn" href="/login"
+                >Start Investing Now</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <div class="container dashboard-container">
+      <h1 class="section-heading">My Current Investments</h1>
+
+      <div class="row mb-5 g-4">
+        <!-- Added g-4 for spacing -->
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="p-4 summary-card h-100">
+            <!-- Added h-100 -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 fw-light">Total Portfolio Value</h5>
+              <i class="fas fa-chart-line text-info fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-0" id="portfolioValueCard">PKR 0.00</h2>
+            <p class="mt-2 text-sm opacity-75">
+              Based on current market prices.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="p-4 summary-card h-100">
+            <!-- Added h-100 -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 fw-light">Net P/L</h5>
+              <i class="fas fa-money-bill-wave text-success fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-0" id="netPLCard">PKR 0.00</h2>
+            <p class="mt-2 text-sm opacity-75">Overall profit or loss.</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="p-4 summary-card h-100">
+            <!-- Added h-100 -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 fw-light">Total Sales</h5>
+              <i class="fas fa-hand-holding-usd text-warning fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-0" id="totalSalesCard">PKR 0.00</h2>
+            <p class="mt-2 text-sm opacity-75">
+              Total value of all 'Sell' transactions.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="p-4 summary-card h-100">
+            <!-- Added h-100 -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 fw-light">Overall Return %</h5>
+              <i class="fas fa-wallet text-danger fs-4"></i>
+            </div>
+            <h2 class="fw-bold mb-0" id="returnPercentageCard">0.00%</h2>
+            <p class="mt-2 text-sm opacity-75">
+              (Net P/L) / (Total Investment).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold fs-5 mb-0">Held Shares</h3>
+        <a href="/add_stock" id="addStockButton" class="btn btn-sm btn-success">
+          <i class="fas fa-plus me-2"></i>Add New Share
+        </a>
+      </div>
+
+      <div class="portfolio-table-wrapper">
+        <table class="table portfolio-table">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Company Name</th>
+              <th>Net Shares</th>
+              <th>Avg. Buy Price</th>
+              <th>Current Price</th>
+              <th>Total Invested</th>
+              <th>Current Value</th>
+              <th>Profit/Loss</th>
+              <th>P/L (%)</th>
+              <!-- Removed 'Actions' as it's not implemented -->
+            </tr>
+          </thead>
+          <tbody id="portfolioTableBody">
+            <!-- Data will be loaded here by JS -->
+          </tbody>
+          <!-- *** THIS IS THE FIX: Added tfoot *** -->
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-end">Totals:</td>
+              <td id="totalInvestedFooter">PKR 0.00</td>
+              <td id="totalValueFooter">PKR 0.00</td>
+              <td id="totalPLFooter">PKR 0.00</td>
+              <td>-</td>
+              <!-- Placeholder for P/L % -->
+            </tr>
+          </tfoot>
+          <!-- *** END OF FIX *** -->
+        </table>
+      </div>
+
+      <div
+        id="emptyPortfolioMessage"
+        class="alert alert-info text-center mt-4"
+        style="display: none"
+      >
+        <!-- JS will populate this -->
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // --- UTILITY/HELPER FUNCTION ---
+      function formatCurrency(value) {
+        if (typeof value !== "number") value = 0;
+        return (
+          "PKR " +
+          value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        );
+      }
+
+      function formatPercentage(value) {
+        if (typeof value !== "number") value = 0;
+        return (
+          value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }) + "%"
+        );
+      }
+
+      function formatNumber(value) {
+        if (typeof value !== "number") value = 0;
+        return value.toLocaleString();
+      }
+
+      // --- AUTHENTICATION ---
+      function handleLogout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.reload();
+      }
+
+      function handleAuthStatus() {
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const authStatusLi = document.getElementById("auth-status");
+        authStatusLi.innerHTML = ""; // Clear existing content
+
+        if (loggedInUser) {
+          // --- LOGGED IN UI ---
+
+          // 1. Welcome message with username
+          const welcomeSpan = document.createElement("span");
+          welcomeSpan.className = "text-white me-3";
+          welcomeSpan.textContent = `Welcome, ${loggedInUser}`;
+
+          // 2. Logout Button
+          const logoutBtn = document.createElement("button");
+          logoutBtn.id = "logout-btn";
+          logoutBtn.className =
+            "btn bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold";
+          logoutBtn.textContent = "Logout";
+          logoutBtn.addEventListener("click", handleLogout);
+
+          authStatusLi.className = "nav-item ms-lg-4 d-flex align-items-center";
+          authStatusLi.appendChild(welcomeSpan);
+          authStatusLi.appendChild(logoutBtn);
+
+          return true;
+        } else {
+          // --- LOGGED OUT UI ---
+          const loginBtn = document.createElement("a");
+          loginBtn.className = "btn btn-primary start-investing-btn";
+          loginBtn.href = "/login";
+          loginBtn.textContent = "Start Investing Now";
+
+          authStatusLi.className = "nav-item ms-lg-4";
+          authStatusLi.appendChild(loginBtn);
+
+          return false;
+        }
+      }
+
+      // --- UI UPDATES ---
+      function showLoggedOutContent() {
+        // Reset card values
+        document.getElementById("portfolioValueCard").textContent = "N/A";
+        document.getElementById("netPLCard").textContent = "N/A";
+        document.getElementById("totalSalesCard").textContent = "N/A";
+        document.getElementById("returnPercentageCard").textContent = "N/A";
+
+        const messageBox = document.getElementById("emptyPortfolioMessage");
+        messageBox.classList.remove("alert-info");
+        messageBox.classList.add("alert-danger");
+        messageBox.innerHTML =
+          "<strong>Authentication Required:</strong> Please log in to view your investment portfolio.";
+        messageBox.style.display = "block";
+
+        const tbody = document.getElementById("portfolioTableBody");
+        tbody.innerHTML =
+          '<tr><td colspan="9" class="text-center text-muted py-5">Please log in to see your holdings.</td></tr>';
+
+        // ---*** THIS IS THE FIX ***---
+        // Clear footer totals (now that tfoot exists)
+        document.getElementById("totalInvestedFooter").textContent = "N/A";
+        document.getElementById("totalValueFooter").textContent = "N/A";
+        document.getElementById("totalPLFooter").textContent = "N/A";
+        // ---*** END OF FIX ***---
+
+        // Hide the Add Stock button when logged out
+        document.getElementById("addStockButton").style.display = "none";
+      }
+
+      function showEmptyPortfolioContent() {
+        const messageBox = document.getElementById("emptyPortfolioMessage");
+        messageBox.classList.remove("alert-danger");
+        messageBox.classList.add("alert-info");
+        messageBox.innerHTML =
+          'This portfolio is empty. Click "Add New Share" to start investing!';
+        messageBox.style.display = "block";
+      }
+
+      function getProfitLossClass(value) {
+        if (value > 0) return "positive-pl";
+        if (value < 0) return "negative-pl";
+        return "zero-pl";
+      }
+
+      // --- DATA FETCHING ---
+      async function fetchPortfolioData() {
+        if (!localStorage.getItem("loggedInUser")) {
+          showLoggedOutContent();
+          return;
+        }
+
+        try {
+          document.getElementById("addStockButton").style.display =
+            "inline-block";
+
+          // Fetch holdings and summary simultaneously
+          const [holdingsResponse, summaryResponse] = await Promise.all([
+            fetch("/holdings"),
+            fetch("/summary"),
+          ]);
+
+          if (!holdingsResponse.ok) {
+            throw new Error(
+              `Holdings request failed: ${holdingsResponse.status}`
+            );
+          }
+          if (!summaryResponse.ok) {
+            throw new Error(
+              `Summary request failed: ${summaryResponse.status}`
+            );
+          }
+
+          const holdings = await holdingsResponse.json();
+          const summary = await summaryResponse.json();
+
+          console.log("Holdings data received:", holdings);
+          console.log("Summary data received:", summary);
+
+          // --- 1. UPDATE SUMMARY CARDS ---
+          const totalInvestment = summary.total_investment || 0;
+          const totalSales = summary.total_sales || 0;
+          const totalValue = summary.portfolio_value || 0;
+          const netPL = summary.net_profit_loss || 0;
+          const overallReturnPercentage =
+            totalInvestment !== 0 ? (netPL / totalInvestment) * 100 : 0;
+
+          document.getElementById("portfolioValueCard").textContent =
+            formatCurrency(totalValue);
+
+          document.getElementById("netPLCard").textContent =
+            formatCurrency(netPL);
+          document.getElementById(
+            "netPLCard"
+          ).className = `fw-bold mb-0 ${getProfitLossClass(netPL)}`;
+
+          // Corrected card ID to match HTML
+          document.getElementById("totalSalesCard").textContent =
+            formatCurrency(totalSales);
+
+          document.getElementById("returnPercentageCard").textContent =
+            formatPercentage(overallReturnPercentage);
+          document.getElementById(
+            "returnPercentageCard"
+          ).className = `fw-bold mb-0 ${getProfitLossClass(
+            overallReturnPercentage
+          )}`;
+
+          // --- 2. UPDATE FOOTER TOTALS ---
+          // We can use the summary data directly for this
+          document.getElementById("totalInvestedFooter").textContent =
+            formatCurrency(totalInvestment);
+          document.getElementById("totalValueFooter").textContent =
+            formatCurrency(totalValue);
+          document.getElementById("totalPLFooter").textContent =
+            formatCurrency(netPL);
+          document.getElementById("totalPLFooter").className =
+            getProfitLossClass(netPL);
+
+          // --- 3. FILL THE HOLDINGS TABLE ---
+          const tbody = document.getElementById("portfolioTableBody");
+          tbody.innerHTML = "";
+
+          if (holdings.length === 0) {
+            showEmptyPortfolioContent();
+            tbody.innerHTML =
+              '<tr><td colspan="9" class="text-center text-muted py-5">No holdings found. Start by adding a new share!</td></tr>';
+          } else {
+            holdings.forEach((stock) => {
+              const row = document.createElement("tr");
+              const profitLoss = stock["Profit/Loss (PKR)"] || 0;
+              // 'Status' column from our new calculator IS the P/L percentage string
+              const plPercentageString = stock["Status"] || "0.00%";
+
+              // We need to parse the numeric value for coloring
+              const plPercentageValue = parseFloat(
+                plPercentageString.replace("%", "")
+              );
+
+              row.innerHTML = `
+                <td>${stock["Company Symbol"] || "-"}</td>
+                <td>${stock["Company Name"] || "-"}</td>
+                <td>${formatNumber(stock["Net Shares"] || 0)}</td>
+                <td>${formatCurrency(stock["Average Buy Price(PKR)"] || 0)}</td>
+                <td>${formatCurrency(
+                  stock["Current Market Price (PKR)"] || 0
+                )}</td>
+                <td>${formatCurrency(stock["Total Bought (PKR)"] || 0)}</td>
+                <td>${formatCurrency(stock["Market Value (PKR)"] || 0)}</td>
+                <td class="${getProfitLossClass(profitLoss)}">
+                  ${formatCurrency(profitLoss)}
+                </td>
+                <td class="${getProfitLossClass(plPercentageValue)}">
+                  ${plPercentageString}
+                </td>
+              `;
+              tbody.appendChild(row);
+            });
+
+            document.getElementById("emptyPortfolioMessage").style.display =
+              "none";
+          }
+
+          console.log("✓ Portfolio data loaded successfully!");
+        } catch (err) {
+          console.error("✗ Error fetching portfolio data:", err);
+
+          const messageBox = document.getElementById("emptyPortfolioMessage");
+          messageBox.innerHTML = `<strong>Error:</strong> ${
+            err.message ||
+            "Failed to load portfolio data. The server may be unreachable."
+          }`;
+          messageBox.classList.remove("alert-info");
+          messageBox.classList.add("alert-danger");
+          messageBox.style.display = "block";
+
+          // Clear cards on error
+          document.getElementById("portfolioValueCard").textContent = "Error";
+          document.getElementById("netPLCard").textContent = "Error";
+          document.getElementById("totalSalesCard").textContent = "Error";
+          document.getElementById("returnPercentageCard").textContent = "Error";
+
+          // Clear footer on error
+          document.getElementById("totalInvestedFooter").textContent = "Error";
+          document.getElementById("totalValueFooter").textContent = "Error";
+          document.getElementById("totalPLFooter").textContent = "Error";
+
+          document.getElementById("portfolioTableBody").innerHTML =
+            '<tr><td colspan="9" class="text-center text-danger py-5">Failed to fetch data. Check console for details.</td></tr>';
+        }
+      }
+
+      // --- INITIALIZATION ---
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. Update the nav bar based on login status
+        const isLoggedIn = handleAuthStatus();
+
+        // 2. Fetch data ONLY if the user is logged in
+        if (isLoggedIn) {
+          fetchPortfolioData();
+        } else {
+          showLoggedOutContent();
+        }
+      });
+    </script>
+  </body>
+</html>

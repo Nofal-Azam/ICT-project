@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Portfolio Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Using your specific color scheme */
+      :root {
+        --header-bg: #3f51b5; /* Header from your other page */
+        --card-bg: #ffffff;
+        --body-bg: #f4f7f6;
+        --text-dark: #1b263b;
+        --text-light: #5a6a85;
+        --accent-yellow: #fdd835;
+        --success: #2ecc71;
+        --danger: #e74c3c;
+        --gradient-start: #1b263b; /* Summary card gradient */
+        --gradient-end: #34495e;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--body-bg);
+        color: var(--text-dark);
+      }
+      /* Header styles */
+      .main-header {
+        background-color: var(--header-bg);
+        color: white;
+      }
+      .main-header .nav-link {
+        color: #e0e0e0;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+      .main-header .nav-link:hover {
+        color: var(--accent-yellow);
+      }
+      .start-investing-btn {
+        background-color: var(--accent-yellow) !important;
+        border-color: var(--accent-yellow) !important;
+        color: var(--text-dark) !important;
+        font-weight: 600;
+      }
+      /* Gradient summary cards */
+      .summary-card-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--gradient-start),
+          var(--gradient-end)
+        );
+        color: white;
+      }
+      /* Custom icon colors */
+      .icon-success {
+        color: var(--success);
+      }
+      .icon-danger {
+        color: var(--danger);
+      }
+      .text-success {
+        color: var(--success);
+      }
+      .text-danger {
+        color: var(--danger);
+      }
+      .text-neutral {
+        color: var(--text-light);
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="main-header py-3 shadow-md">
+      <div class="container mx-auto flex justify-between items-center px-4">
+        <!-- 1. LOGO (Left) -->
+        <div class="logo">
+          <a href="/" class="text-decoration-none text-white text-2xl font-bold"
+            >StocksMaster</a
+          >
+        </div>
+
+        <!-- 2. NAV LINKS (Center) -->
+        <nav class="main-nav">
+          <ul class="flex space-x-6">
+            <li>
+              <a class="nav-link" href="/">Home Page</a>
+            </li>
+            <li>
+              <a class="nav-link" href="/index2_seeinvestments"
+                >See Investments</a
+              >
+            </li>
+            <li>
+              <a class="nav-link" href="/add_stock">Add Stock</a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 3. AUTH BUTTON (Right) -->
+        <div id="auth-status">
+          <!-- JS will populate this -->
+          <a class="btn start-investing-btn py-2 px-4 rounded-lg" href="/login"
+            >Start Investing Now</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto p-4 md:p-8">
+      <!-- Authentication Check Container -->
+      <div id="analysis-content" class="hidden">
+        <!-- Page Title -->
+        <h1
+          class="text-3xl font-bold mb-8 text-text-dark border-b-4 border-accent-yellow inline-block pb-2"
+        >
+          Portfolio Analysis
+        </h1>
+
+        <!-- Top 3 Performers -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4 text-text-dark">
+            Top 3 Performers
+          </h2>
+          <div
+            id="top-performers-container"
+            class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"
+          >
+            <!-- Performer cards will be injected here by JS -->
+            <div class="summary-card-gradient p-6 rounded-xl shadow-lg">
+              <p class="text-lg font-semibold text-gray-200">Loading...</p>
+            </div>
+            <div class="summary-card-gradient p-6 rounded-xl shadow-lg">
+              <p class="text-lg font-semibold text-gray-200">Loading...</p>
+            </div>
+            <div class="summary-card-gradient p-6 rounded-xl shadow-lg">
+              <p class="text-lg font-semibold text-gray-200">Loading...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Company Deep Dive -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4 text-text-dark">
+            Company Deep Dive
+          </h2>
+          <div
+            class="bg-card-bg p-6 rounded-xl shadow-lg flex flex-col md:flex-row gap-6 items-start"
+          >
+            <!-- Company Selector -->
+            <div class="w-full md:w-1/3">
+              <label
+                for="company-select"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Select Company</label
+              >
+              <select
+                id="company-select"
+                class="block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Select a company</option>
+                <!-- Options will be injected here by JS -->
+              </select>
+            </div>
+
+            <!-- Details Card -->
+            <div
+              id="details-card"
+              class="w-full md:w-2/3 bg-gray-50 p-6 rounded-lg"
+            >
+              <h3 id="details-symbol" class="text-2xl font-bold text-text-dark">
+                Select a Company
+              </h3>
+              <p id="details-name" class="text-lg text-text-light mb-6">
+                to see a detailed breakdown.
+              </p>
+
+              <div
+                id="details-grid"
+                class="hidden grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5"
+              >
+                <!-- Data points will be injected here -->
+                <div>
+                  <p class="text-sm font-medium text-text-light">
+                    Total Invested
+                  </p>
+                  <p id="details-invested" class="text-xl font-semibold"></p>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-text-light">Total Sold</p>
+                  <p id="details-sold" class="text-xl font-semibold"></p>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-text-light">Net Shares</p>
+                  <p id="details-shares" class="text-xl font-semibold"></p>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-text-light">
+                    Avg. Buy Price
+                  </p>
+                  <p id="details-avg-buy" class="text-xl font-semibold"></p>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-text-light">
+                    Current Price
+                  </p>
+                  <p
+                    id="details-current-price"
+                    class="text-xl font-semibold"
+                  ></p>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-text-light">
+                    Market Value
+                  </p>
+                  <p
+                    id="details-market-value"
+                    class="text-xl font-semibold"
+                  ></p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-medium text-text-light">
+                    Profit / Loss
+                  </p>
+                  <p id="details-pl" class="text-2xl font-bold"></p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-medium text-text-light">Status</p>
+                  <p id="details-status" class="text-xl font-semibold"></p>
+                </div>
+                <div class="col-span-1">
+                  <p class="text-sm font-medium text-text-light">Return %</p>
+                  <p id="details-return" class="text-2xl font-bold"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Logged Out Message -->
+      <div
+        id="logged-out-message"
+        class="hidden text-center bg-card-bg p-10 rounded-xl shadow-lg"
+      >
+        <i class="fas fa-exclamation-triangle text-danger text-5xl mb-4"></i>
+        <h2 class="text-2xl font-semibold text-text-dark mb-2">
+          Authentication Required
+        </h2>
+        <p class="text-text-light mb-6">
+          Please log in to view your portfolio analysis.
+        </p>
+        <a
+          href="/login"
+          class="btn start-investing-btn inline-block py-2 px-6 rounded-lg font-semibold"
+          >Go to Login</a
+        >
+      </div>
+
+      <!-- Error Message -->
+      <div
+        id="error-message"
+        class="hidden text-center bg-red-100 border border-red-400 text-red-700 p-6 rounded-xl shadow-lg"
+      >
+        <i class="fas fa-times-circle text-5xl mb-4"></i>
+        <h2 class="text-2xl font-semibold mb-2">Failed to Load Data</h2>
+        <p id="error-details" class="mb-6">
+          Could not fetch portfolio data from the server.
+        </p>
+        <button
+          onclick="location.reload()"
+          class="bg-red-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-red-700"
+        >
+          Try Reloading
+        </button>
+      </div>
+    </main>
+
+    <script>
+      // Global store for our data
+      let companyData = {};
+
+      // === UTILITY FUNCTIONS ===
+
+      function formatCurrency(value, withColor = false) {
+        if (typeof value !== "number") value = 0;
+        const formatted =
+          "PKR " +
+          value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+
+        if (!withColor) return formatted;
+
+        const colorClass =
+          value > 0
+            ? "text-success"
+            : value < 0
+            ? "text-danger"
+            : "text-neutral";
+        return `<span class="${colorClass}">${formatted}</span>`;
+      }
+
+      function formatPercentage(value) {
+        // 'value' is expected to be a string like "5.50%" from the backend
+        if (typeof value !== "string") {
+          value = "0.00%";
+        }
+
+        const numericValue = parseFloat(value.replace("%", ""));
+
+        const colorClass =
+          numericValue > 0
+            ? "text-success"
+            : numericValue < 0
+            ? "text-danger"
+            : "text-neutral";
+        return `<span class="${colorClass}">${value}</span>`;
+      }
+
+      function formatNumber(value) {
+        if (typeof value !== "number") value = 0;
+        return value.toLocaleString();
+      }
+
+      // === AUTHENTICATION ===
+
+      function handleLogout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.reload();
+      }
+
+      function handleAuthStatus() {
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const authStatusDiv = document.getElementById("auth-status");
+        authStatusDiv.innerHTML = ""; // Clear existing
+
+        if (loggedInUser) {
+          // --- LOGGED IN UI ---
+          const welcomeSpan = document.createElement("span");
+          welcomeSpan.className = "text-white mr-3";
+          welcomeSpan.textContent = `Welcome, ${loggedInUser}`;
+          const logoutBtn = document.createElement("button");
+          logoutBtn.id = "logout-btn";
+          logoutBtn.className =
+            "btn bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold";
+          logoutBtn.textContent = "Logout";
+          logoutBtn.addEventListener("click", handleLogout);
+
+          authStatusDiv.appendChild(welcomeSpan);
+          authStatusDiv.appendChild(logoutBtn);
+          return true;
+        } else {
+          // --- LOGGED OUT UI ---
+          const loginBtn = document.createElement("a");
+          loginBtn.className = "btn start-investing-btn py-2 px-4 rounded-lg";
+          loginBtn.href = "/login";
+          loginBtn.textContent = "Start Investing Now";
+          authStatusDiv.appendChild(loginBtn);
+          return false;
+        }
+      }
+
+      // === DATA FETCHING AND RENDERING ===
+
+      async function initializeAnalysisPage() {
+        try {
+          // 1. Fetch all holdings data
+          const response = await fetch("/holdings");
+          if (!response.ok) {
+            let errorText = await response.text();
+            try {
+              // Try to parse as JSON for a more specific error
+              const errorJson = JSON.parse(errorText);
+              errorText = errorJson.error || errorText;
+            } catch (e) {
+              // Not JSON, just use the raw text
+            }
+            throw new Error(
+              `Server responded with ${response.status}. ${errorText}`
+            );
+          }
+
+          const holdings = await response.json();
+          if (!holdings || holdings.length === 0) {
+            showError("No holdings data was returned from the server.");
+            return;
+          }
+
+          // 2. Process data and store it
+          holdings.forEach((company) => {
+            // Store in our global object
+            companyData[company["Company Symbol"]] = company;
+          });
+
+          // 3. Populate UI
+          populateTopPerformers(holdings);
+          populateDropdown();
+
+          // 4. Show the content
+          document
+            .getElementById("analysis-content")
+            .classList.remove("hidden");
+        } catch (error) {
+          console.error("Failed to initialize analysis page:", error);
+          showError(error.message);
+        }
+      }
+
+      function populateTopPerformers(holdings) {
+        const container = document.getElementById("top-performers-container");
+        container.innerHTML = ""; // Clear loading state
+
+        // Sort by P/L (descending) and take top 3
+        const top3 = [...holdings]
+          .sort(
+            (a, b) =>
+              (b["Profit/Loss (PKR)"] || 0) - (a["Profit/Loss (PKR)"] || 0)
+          )
+          .slice(0, 3);
+
+        top3.forEach((company, index) => {
+          const pl = company["Profit/Loss (PKR)"] || 0;
+          const symbol = company["Company Symbol"];
+          const card = document.createElement("div");
+          card.className =
+            "summary-card-gradient p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer";
+          card.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-lg font-semibold">${symbol}</span>
+              <span class="text-2xl font-bold">#${index + 1}</span>
+            </div>
+            <p class="text-3xl font-bold mb-1">${formatCurrency(pl)}</p>
+            <p class="${
+              pl >= 0 ? "text-success" : "text-danger"
+            } font-semibold">
+              ${pl >= 0 ? "Profit" : "Loss"}
+            </p>
+          `;
+          // Add click listener to update deep dive
+          card.addEventListener("click", () => updateDetailsCard(symbol));
+          container.appendChild(card);
+        });
+      }
+
+      function populateDropdown() {
+        const select = document.getElementById("company-select");
+        const symbols = Object.keys(companyData).sort();
+
+        symbols.forEach((symbol) => {
+          const option = document.createElement("option");
+          option.value = symbol;
+          option.textContent = `${symbol} - ${companyData[symbol]["Company Name"]}`;
+          select.appendChild(option);
+        });
+
+        // Add event listener to the select
+        select.addEventListener("change", (e) => {
+          if (e.target.value) {
+            updateDetailsCard(e.target.value);
+          }
+        });
+      }
+
+      function updateDetailsCard(symbol) {
+        const data = companyData[symbol];
+        if (!data) return;
+
+        // Update the dropdown to match, if clicked from a card
+        document.getElementById("company-select").value = symbol;
+
+        // Show the details grid
+        document.getElementById("details-grid").classList.remove("hidden");
+
+        // Update text content
+        document.getElementById("details-symbol").textContent =
+          data["Company Symbol"];
+        document.getElementById("details-name").textContent =
+          data["Company Name"];
+
+        // Update data points
+        document.getElementById("details-invested").textContent =
+          formatCurrency(data["Total Bought (PKR)"]);
+        document.getElementById("details-sold").textContent = formatCurrency(
+          data["Total Sold(PKR)"]
+        );
+        document.getElementById("details-shares").textContent = formatNumber(
+          data["Net Shares"]
+        );
+        document.getElementById("details-avg-buy").textContent = formatCurrency(
+          data["Average Buy Price(PKR)"]
+        );
+        document.getElementById("details-current-price").textContent =
+          formatCurrency(data["Current Market Price (PKR)"]);
+        document.getElementById("details-market-value").textContent =
+          formatCurrency(data["Market Value (PKR)"]);
+
+        // Update P/L and Return with color
+        document.getElementById("details-pl").innerHTML = formatCurrency(
+          data["Profit/Loss (PKR)"],
+          true
+        );
+
+        // Use the 'Status' column (which is P/L %) for Return %
+        document.getElementById("details-return").innerHTML = formatPercentage(
+          data["Status"]
+        );
+
+        // Set 'Status' based on Net Shares
+        const netShares = data["Net Shares"] || 0;
+        document.getElementById("details-status").textContent =
+          netShares > 0 ? "Holding" : "Sold";
+      }
+
+      function showError(message) {
+        document.getElementById("analysis-content").classList.add("hidden");
+        document.getElementById("logged-out-message").classList.add("hidden");
+
+        const errorDiv = document.getElementById("error-message");
+        document.getElementById("error-details").textContent = message;
+        errorDiv.classList.remove("hidden");
+      }
+
+      // === INITIALIZATION ===
+      document.addEventListener("DOMContentLoaded", () => {
+        const isLoggedIn = handleAuthStatus();
+
+        if (isLoggedIn) {
+          initializeAnalysisPage();
+        } else {
+          // Show logged-out message
+          document
+            .getElementById("logged-out-message")
+            .classList.remove("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>
